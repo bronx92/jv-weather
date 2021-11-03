@@ -37,4 +37,8 @@ export class HomePage implements OnInit {
     this.store.dispatch(fromHomeActions.loadCurrentWeather({ query }))
   }
 
+  onToggleBookmark() {
+    
+  }
+
 }
