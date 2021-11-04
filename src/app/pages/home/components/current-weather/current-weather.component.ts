@@ -10,7 +10,7 @@ import { CityWeather } from 'src/app/shared/models/weather.model';
 export class CurrentWeatherComponent {
 
   @Input() cityWeather: CityWeather;
-  // @Output() toggleBookmark = new EventEmitter();
+  @Input() isFavorite: boolean;
   @Output() toggleBookmark = new EventEmitter();
 
   get cityName(): String {

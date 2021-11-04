@@ -7015,6 +7015,12 @@
     },
     {
         "country": "Brazil",
+        "geonameid": 2927408,
+        "name": "Salvador",
+        "subcountry": "Bahia"
+    },
+    {
+        "country": "Brazil",
         "geonameid": 3389822,
         "name": "Salin\u00f3polis",
         "subcountry": "Par\u00e1"

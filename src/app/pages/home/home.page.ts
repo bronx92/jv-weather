@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable, Subject, combineLatest } from 'rxjs';
+import { takeUntil, map } from 'rxjs/operators';
 import { Bookmark } from 'src/app/shared/models/bookmark.model';
 import { CityWeather } from 'src/app/shared/models/weather.model';
 import * as fromHomeActions from './state/home.actions';
 import * as fromHomeSelectors from './state/home.selectors';
+import * as fromBookmarksSelectors from 'src/app/pages/bookmarks/state/bookmarks.selectors';
 
 
 @Component({
@@ -20,6 +21,9 @@ export class HomePage implements OnInit {
   cityWeather: CityWeather;
   loading$: Observable<boolean>;
   error$: Observable<boolean>;
+
+  bookmarksList$: Observable<Bookmark[]>;
+  isCurrentFavorite$: Observable<boolean>;
 
   searchControl: FormControl;
 
@@ -38,16 +42,29 @@ export class HomePage implements OnInit {
       .subscribe(value => this.cityWeather = value);
     this.loading$ = this.store.pipe(select(fromHomeSelectors.selectCurrentWeatherLoading));
     this.error$ = this.store.pipe(select(fromHomeSelectors.selectCurrentWeatherError));
-  }
 
-  doSearch() {
-    const query = this.searchControl.value;
-    this.store.dispatch(fromHomeActions.loadCurrentWeather({ query }))
+    this.bookmarksList$ = this.store.pipe(select(fromBookmarksSelectors.selectBookmarksList));
+
+    this.isCurrentFavorite$ = combineLatest([this.cityWeather$, this.bookmarksList$])
+      .pipe(
+        map(([current, bookmarksList]) => {
+          if (!!current) {
+            return bookmarksList.some(bookmark => bookmark.id === current.city.id);
+          }
+          return false;
+        }),
+      );
   }
 
   ngOnDestroy() {
     this.componentDestroyed$.next();
     this.componentDestroyed$.unsubscribe();
+    this.store.dispatch(fromHomeActions.clearHomeState());
+  }
+
+  doSearch() {
+    const query = this.searchControl.value;
+    this.store.dispatch(fromHomeActions.loadCurrentWeather({ query }))
   }
 
   onToggleBookmark() {
@@ -56,6 +73,7 @@ export class HomePage implements OnInit {
     bookmark.name = this.cityWeather.city.name;
     bookmark.country = this.cityWeather.city.country;
     bookmark.coord = this.cityWeather.city.coord;
+    this.store.dispatch(fromHomeActions.toggleBookmark({ entity: bookmark }));
   }
 
 }
