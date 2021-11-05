@@ -11,9 +11,11 @@
         </a>
         
         <a class="card-link"
-           routerLink="/details">
+           routerLink="/details"
+           [queryParams]="{ lat: cityWeather.city.coord.lat, lon: cityWeather.city.coord.lon }">
           Ver detalhes
         </a>
+        
       </div>
   
     </div>
