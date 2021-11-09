@@ -8,6 +8,7 @@ import { CityWeather } from 'src/app/shared/models/weather.model';
 import * as fromHomeActions from './state/home.actions';
 import * as fromHomeSelectors from './state/home.selectors';
 import * as fromBookmarksSelectors from 'src/app/pages/bookmarks/state/bookmarks.selectors';
+import { CityTypeaheadItem } from 'src/app/shared/models/city-typeahead-item.model';
 
 
 @Component({
@@ -15,7 +16,7 @@ import * as fromBookmarksSelectors from 'src/app/pages/bookmarks/state/bookmarks
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss']
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, OnDestroy{
 
   cityWeather$: Observable<CityWeather>;
   cityWeather: CityWeather;
@@ -26,15 +27,24 @@ export class HomePage implements OnInit {
   isCurrentFavorite$: Observable<boolean>;
 
   searchControl: FormControl;
+  searchControlWithAutocomplete: FormControl;
 
   text: string;
 
-  private componentDestroyed$ = new Subject;
+  private componentDestroyed$ = new Subject();
 
   constructor(private store: Store) { }
 
   ngOnInit(){
     this.searchControl = new FormControl('', Validators.required);
+    this.searchControlWithAutocomplete = new FormControl(undefined);
+    this.searchControlWithAutocomplete.valueChanges
+      .pipe(takeUntil(this.componentDestroyed$))
+      .subscribe((value: CityTypeaheadItem) => {
+        if (!!value) {
+          this.store.dispatch(fromHomeActions.loadCurrentWeatherById({id: value.geonameid.toString()}));
+        }
+      });
 
     this.cityWeather$ = this.store.pipe(select(fromHomeSelectors.selectCurrentWeather));
     this.cityWeather$
