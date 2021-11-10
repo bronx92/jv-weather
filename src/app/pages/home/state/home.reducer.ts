@@ -16,8 +16,7 @@ export interface HomeState {
   const reducer = createReducer(
     homeInitialState,
     on(fromHomeActions.clearHomeState, () => homeInitialState),
-    on(
-      fromHomeActions.loadCurrentWeather,
+    on(fromHomeActions.loadCurrentWeather,
       fromHomeActions.loadCurrentWeatherById,
       state => ({
       ...state,
