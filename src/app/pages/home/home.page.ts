@@ -12,6 +12,8 @@ import { CityTypeaheadItem } from 'src/app/shared/models/city-typeahead-item.mod
 
 import { PortalOutlet, DomPortalOutlet, ComponentPortal } from '@angular/cdk/portal';
 import { UnitSelectorComponent } from './containers/unit-selector/unit-selector.component';
+import { Units } from 'src/app/shared/models/units.enum';
+import * as fromConfigSelectors from 'src/app/shared/state/config/config.selectors';
 
 
 @Component({
@@ -32,7 +34,7 @@ export class HomePage implements OnInit, OnDestroy{
   searchControl: FormControl;
   searchControlWithAutocomplete: FormControl;
 
-  text: string;
+  unit$: Observable<Units>;
 
   private componentDestroyed$ = new Subject();
 
@@ -73,6 +75,8 @@ export class HomePage implements OnInit, OnDestroy{
         }),
       );
       
+      this.unit$ = this.store.pipe(select(fromConfigSelectors.selectUnitConfig));
+
       this.setupPortal();
   }
 
