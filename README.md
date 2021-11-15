@@ -1,6 +1,18 @@
 # JvWeather
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.7.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.7, performs weather queries on OpenWeather.org and has some functionality like:
+* Possibility of saving your cities consulted on a Favorites page;
+* Query with city suggestions to autocomplete, using an API simulation of cities from multiple countries;
+* Query detail, displaying forecast for the next 7 days;
+
+IN this project are applied knowledge such as:
+* Bootstrap as a framework for CSS
+* Lazy Loading;
+* State Management using NgRx, a collection of libraries for reactive extensions;
+* API consumption;
+* Angular CDK for using Portals ("pieces of code" that provide a way to render dynamic content in specific parts of an application);
+
+
 
 ## Development server
 
